@@ -293,33 +293,33 @@ public class ReBuildModelPanel extends JPanel {
 			ReBuildModelPanel.progressCurrent.setValue(0);
 			labelStatus.setText(PropertyUtil.getProperty("ds.ui.status.scheduledRunning"));
 //			ScheduleExecuteThread syncThread = new ScheduleExecuteThread();
-//			service = Executors.newSingleThreadScheduledExecutor();
+//			handle = Executors.newSingleThreadScheduledExecutor();
 //			// 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
 //			String scheduleConf = ConstantsTools.CONFIGER.getSchedule();
 //			if ("true,false,false,false,false,false,false".equals(scheduleConf)) {
-//				service.scheduleAtFixedRate(syncThread, 0, 5, TimeUnit.MINUTES);
+//				handle.scheduleAtFixedRate(syncThread, 0, 5, TimeUnit.MINUTES);
 //
 //			} else if ("false,true,false,false,false,false,false".equals(scheduleConf)) {
-//				service.scheduleAtFixedRate(syncThread, 0, 15, TimeUnit.MINUTES);
+//				handle.scheduleAtFixedRate(syncThread, 0, 15, TimeUnit.MINUTES);
 //
 //			} else if ("false,false,true,false,false,false,false".equals(scheduleConf)) {
-//				service.scheduleAtFixedRate(syncThread, 0, 30, TimeUnit.MINUTES);
+//				handle.scheduleAtFixedRate(syncThread, 0, 30, TimeUnit.MINUTES);
 //
 //			} else if ("false,false,false,true,false,false,false".equals(scheduleConf)) {
-//				service.scheduleAtFixedRate(syncThread, 0, 1, TimeUnit.HOURS);
+//				handle.scheduleAtFixedRate(syncThread, 0, 1, TimeUnit.HOURS);
 //
 //			} else if ("false,false,false,false,true,false,false".equals(scheduleConf)) {
-//				service.scheduleAtFixedRate(syncThread, 0, 1, TimeUnit.DAYS);
+//				handle.scheduleAtFixedRate(syncThread, 0, 1, TimeUnit.DAYS);
 //
 //			} else if ("false,false,false,false,false,true,false".equals(scheduleConf)) {
-//				service.scheduleAtFixedRate(syncThread, 0, 7, TimeUnit.DAYS);
+//				handle.scheduleAtFixedRate(syncThread, 0, 7, TimeUnit.DAYS);
 //
 //			} else if ("false,false,false,false,false,false,true".equals(scheduleConf)) {
 //				long oneDay = 24 * 60 * 60 * 1000;
 //				long initDelay = getTimeMillis(ConstantsTools.CONFIGER.getScheduleFixTime().trim())
 //						- System.currentTimeMillis();
 //				initDelay = initDelay > 0 ? initDelay : oneDay + initDelay;
-//				service.scheduleAtFixedRate(syncThread, initDelay, oneDay, TimeUnit.MILLISECONDS);
+//				handle.scheduleAtFixedRate(syncThread, initDelay, oneDay, TimeUnit.MILLISECONDS);
 //			}
 
 		});

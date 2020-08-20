@@ -292,6 +292,55 @@ public class UiConsts {
     public final static ImageIcon ICON_CLEAR_LOG_DISABLE = new ImageIcon(
             App.class.getResource("/icon/clearLogDisable.png"));
 
+
+    /**
+     * CAS基础按钮
+     */
+    public final static ImageIcon ICON_CASBASE_ENABLE = new ImageIcon(
+            App.class.getResource("/icon/baseCasEnable3.png"));
+    /**
+     * CAS基础按钮失效
+     */
+    public final static ImageIcon ICON_CASBASE = new ImageIcon(
+            App.class.getResource("/icon/baseCas3.png"));
+
+    /**
+     * TTF基础按钮
+     */
+    public final static ImageIcon ICON_TTFBASE_ENABLE = new ImageIcon(
+            App.class.getResource("/icon/ttfBaseEnable3.png"));
+    /**
+     * TTF基础按钮失效
+     */
+    public final static ImageIcon ICON_TTFBASE = new ImageIcon(
+            App.class.getResource("/icon/ttfBase3.png"));
+    /**
+     * 选择文件
+     */
+    public final static ImageIcon ICON_CHOOSEFILE_ENABLE = new ImageIcon(
+            App.class.getResource("/icon/chooseFileEnable1.png"));
+    /**
+     * 选择文件失效
+     */
+    public final static ImageIcon ICON_CHOOSEFILE = new ImageIcon(
+            App.class.getResource("/icon/chooseFile1.png"));
+    /**
+     * 开始创建模型
+     */
+    public final static ImageIcon ICON_START = new ImageIcon(
+            App.class.getResource("/icon/start.png"));
+    /**
+     * 开始创建模型
+     */
+    public final static ImageIcon ICON_START_ENABLE = new ImageIcon(
+            App.class.getResource("/icon/startEnable.png"));
+    /**
+     * 开始创建模型
+     */
+    public final static ImageIcon ICON_START_DISABLE = new ImageIcon(
+            App.class.getResource("/icon/startDisable.png"));
+
+
     // 样式布局相关
     /**
      * 主面板水平间隔
@@ -304,11 +353,11 @@ public class UiConsts {
     /**
      * Item Label 大小
      */
-    public final static Dimension LABLE_SIZE_ITEM = new Dimension(78, 30);
+    public final static Dimension LABLE_SIZE_ITEM = new Dimension(150, 30);
     /**
      * Item text field 大小
      */
-    public final static Dimension TEXT_FIELD_SIZE_ITEM = new Dimension(400, 24);
+    public final static Dimension TEXT_FIELD_SIZE_ITEM = new Dimension(250, 22);
     /**
      * radio 大小
      */

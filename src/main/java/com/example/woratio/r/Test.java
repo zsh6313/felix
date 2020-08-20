@@ -1,5 +1,13 @@
 package com.example.woratio.r;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 /**
  * @filename Test
  * @description
@@ -7,12 +15,60 @@ package com.example.woratio.r;
  * @date 2020/1/10 16:02
  */
 public class Test {
+	private static final int MIN_PROGRESS = 0;
+	private static final int MAX_PROGRESS = 100;
+
+	private static int currentProgress = MIN_PROGRESS;
 	public static void main(String[] args) {
-		String contractJson = "[{\"contractData\":\"{\\\"cityCode\\\":\\\"09\\\",\\\"contractType\\\":\\\"4\\\",\\\"url\\\":\\\"creditAgreementAction/previewCreditAgreement.do\\\",\\\"token\\\":\\\"b5190e65-cc39-4dff-97d9-fa89eec57d19\\\",\\\"timestamp\\\":\\\"1579510549889\\\"}\",\"contractType\":\"4\",\"contractURL\":\"https://proxyuat.uaf.com.cn/uaapply/appWeb/v2/creditAgreementAction/previewCreditAgreement.do\",\"strategyXML\":\"{\\\"imageWidth\\\":\\\"120\\\",\\\"imageName\\\":\\\"熊成龙\\\",\\\"imageName2\\\":\\\"\\\",\\\"color\\\":\\\"FF0000\\\",\\\"type\\\":\\\"2\\\",\\\"lx\\\":\\\"395\\\",\\\"ly\\\":\\\"145\\\",\\\"imageHeight\\\":\\\"65\\\",\\\"offsetX\\\":\\\"1\\\",\\\"offsetY\\\":\\\"1\\\",\\\"imageShape\\\":\\\"3\\\",\\\"fontSize\\\":\\\"100\\\",\\\"page\\\":\\\"1\\\",\\\"keyword\\\":\\\"\\\",\\\"hashAlg\\\":\\\"sha1\\\",\\\"locationStyle\\\":\\\"\\\"}\",\"x509Cert\":\"MIIEXDCCA0SgAwIBAgIFQCInIVkwDQYJKoZIhvcNAQELBQAwXTELMAkGA1UEBhMCQ04xMDAuBgNVBAoMJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTEcMBoGA1UEAwwTQ0ZDQSBBQ1MgVEVTVCBPQ0EzMTAeFw0yMDAxMjAwODU0MzdaFw0yMjAxMjAwODU0MzdaMIGDMQswCQYDVQQGEwJDTjEcMBoGA1UECgwTQ0ZDQSBURVNUIE9DQTMxIFJTQTERMA8GA1UECwwITG9jYWwgUkExFTATBgNVBAsMDEluZGl2aWR1YWwtMTEsMCoGA1UEAwwjMDUxQOeGiuaIkOm+mUAwNDIwNjgyMTk5MzEyMDEzMDI3QDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDdZrV5pnKq7PlInivneN8gxXuafuTkD2JptXJ02sJSCLeFyQHiygObHgWOrhWlEigFS0uZGySHzmh4dRpWv1zeI2iq87XjjL+JYGkq4MXVR2szrhV44564F8qw8Bxo+P2ORXVvTKRoWNt1ZnUCz9ZFuJ3gaIeGbVLFQLJkjozpXE1ify66eMW/nxYXn/Q4v37hOqDXZAPvIVEUkLsY6ghtqN89h5N9u/Q4r7ek6ZzxB0Xem9cotCEzCL6bIg+qjlvUCWz9fyS1uXHYSj7FSVp30cZzcySt8jWCC3nfcwoqmhF177GBHiiQdH9Z+m9TEodwabOQ1JZEzjIw5n9JzX8TAgMBAAGjgfswgfgwPwYIKwYBBQUHAQEEMzAxMC8GCCsGAQUFBzABhiNodHRwOi8vb2NzcHRlc3QuY2ZjYS5jb20uY246ODAvb2NzcDAfBgNVHSMEGDAWgBSaPbSuZVj7zloFeCagbSsEhrrG7DAMBgNVHRMBAf8EAjAAMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly8yMTAuNzQuNDIuMy9PQ0EzMS9SU0EvY3JsMjAzLmNybDAOBgNVHQ8BAf8EBAMCBsAwHQYDVR0OBBYEFDfUFWNTpXCSFRocww8ZAwXzt+XkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDANBgkqhkiG9w0BAQsFAAOCAQEAqpWvU1DYYTtS74Frhi0Tc1Jb3xm81TT10ooHN46WZCWRQBRqQ2UeR5vGcNbnAJ5UGPwTdcbIXPJV8ZYlmxcHkkPb5yV6hOS9C1v8pkaolwwJIcnCC216N3OOeDKaEABlkR3I6w/G9XwPfUwZDKSBq1ROI10sqntUFOurpJwvs+BUORJVaDpAksCeo+oIC9KaUEh4IH1fJo2xgw40ukkFXLSCMCBpQDSTgyN1R4Fk5BySe3/ZAf3p7CVWDYMNFL2EhT4ywJGrhAyjQACe87ejjGqbAwE+PvCIoah2cHGk2G4KfV25C4gzFhrp0J+VnLei2nQGOXB4IhGJ9hFPky/C8Q==\"},{\"contractData\":\"{\\\"cityCode\\\":\\\"09\\\",\\\"contractType\\\":\\\"26\\\",\\\"url\\\":\\\"creditAgreementAction/previewCreditAgreement.do\\\",\\\"token\\\":\\\"b5190e65-cc39-4dff-97d9-fa89eec57d19\\\",\\\"timestamp\\\":\\\"1579510549902\\\"}\",\"contractType\":\"26\",\"contractURL\":\"https://proxyuat.uaf.com.cn/uaapply/appWeb/v2/creditAgreementAction/previewCreditAgreement.do\",\"strategyXML\":\"{\\\"imageWidth\\\":\\\"120\\\",\\\"imageName\\\":\\\"熊成龙\\\",\\\"imageName2\\\":\\\"\\\",\\\"color\\\":\\\"FF0000\\\",\\\"type\\\":\\\"2\\\",\\\"lx\\\":\\\"250\\\",\\\"ly\\\":\\\"50\\\",\\\"imageHeight\\\":\\\"65\\\",\\\"offsetX\\\":\\\"1\\\",\\\"offsetY\\\":\\\"1\\\",\\\"imageShape\\\":\\\"3\\\",\\\"fontSize\\\":\\\"100\\\",\\\"page\\\":\\\"1\\\",\\\"keyword\\\":\\\"\\\",\\\"hashAlg\\\":\\\"sha1\\\",\\\"locationStyle\\\":\\\"\\\"}\",\"x509Cert\":\"MIIEXDCCA0SgAwIBAgIFQCInIVkwDQYJKoZIhvcNAQELBQAwXTELMAkGA1UEBhMCQ04xMDAuBgNVBAoMJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTEcMBoGA1UEAwwTQ0ZDQSBBQ1MgVEVTVCBPQ0EzMTAeFw0yMDAxMjAwODU0MzdaFw0yMjAxMjAwODU0MzdaMIGDMQswCQYDVQQGEwJDTjEcMBoGA1UECgwTQ0ZDQSBURVNUIE9DQTMxIFJTQTERMA8GA1UECwwITG9jYWwgUkExFTATBgNVBAsMDEluZGl2aWR1YWwtMTEsMCoGA1UEAwwjMDUxQOeGiuaIkOm+mUAwNDIwNjgyMTk5MzEyMDEzMDI3QDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDdZrV5pnKq7PlInivneN8gxXuafuTkD2JptXJ02sJSCLeFyQHiygObHgWOrhWlEigFS0uZGySHzmh4dRpWv1zeI2iq87XjjL+JYGkq4MXVR2szrhV44564F8qw8Bxo+P2ORXVvTKRoWNt1ZnUCz9ZFuJ3gaIeGbVLFQLJkjozpXE1ify66eMW/nxYXn/Q4v37hOqDXZAPvIVEUkLsY6ghtqN89h5N9u/Q4r7ek6ZzxB0Xem9cotCEzCL6bIg+qjlvUCWz9fyS1uXHYSj7FSVp30cZzcySt8jWCC3nfcwoqmhF177GBHiiQdH9Z+m9TEodwabOQ1JZEzjIw5n9JzX8TAgMBAAGjgfswgfgwPwYIKwYBBQUHAQEEMzAxMC8GCCsGAQUFBzABhiNodHRwOi8vb2NzcHRlc3QuY2ZjYS5jb20uY246ODAvb2NzcDAfBgNVHSMEGDAWgBSaPbSuZVj7zloFeCagbSsEhrrG7DAMBgNVHRMBAf8EAjAAMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly8yMTAuNzQuNDIuMy9PQ0EzMS9SU0EvY3JsMjAzLmNybDAOBgNVHQ8BAf8EBAMCBsAwHQYDVR0OBBYEFDfUFWNTpXCSFRocww8ZAwXzt+XkMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDANBgkqhkiG9w0BAQsFAAOCAQEAqpWvU1DYYTtS74Frhi0Tc1Jb3xm81TT10ooHN46WZCWRQBRqQ2UeR5vGcNbnAJ5UGPwTdcbIXPJV8ZYlmxcHkkPb5yV6hOS9C1v8pkaolwwJIcnCC216N3OOeDKaEABlkR3I6w/G9XwPfUwZDKSBq1ROI10sqntUFOurpJwvs+BUORJVaDpAksCeo+oIC9KaUEh4IH1fJo2xgw40ukkFXLSCMCBpQDSTgyN1R4Fk5BySe3/ZAf3p7CVWDYMNFL2EhT4ywJGrhAyjQACe87ejjGqbAwE+PvCIoah2cHGk2G4KfV25C4gzFhrp0J+VnLei2nQGOXB4IhGJ9hFPky/C8Q==\"}]";
+		JFrame jf = new JFrame("测试窗口");
+		jf.setSize(250, 250);
+		jf.setLocationRelativeTo(null);
+		jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+		JPanel panel = new JPanel();
 
-//		List<ContractBean> contractBeanList = JsonUtil
-//				.fromJson(contractJson, new TypeToken<ArrayList<ContractBean>>() {
-//				}.getType());
+		// 创建一个进度条
+		final JProgressBar progressBar = new JProgressBar();
+		progressBar.setOrientation(JProgressBar.HORIZONTAL);
+		progressBar.setBounds(0, 20, 100, 1);
+		progressBar.setBorderPainted(false);
+		progressBar.setForeground(new Color(55,165,228));
+		progressBar.setBackground(new Color(218,218,218));
+		// 设置进度的 最小值 和 最大值
+		progressBar.setMinimum(MIN_PROGRESS);
+		progressBar.setMaximum(MAX_PROGRESS);
+
+		// 设置当前进度值
+		progressBar.setValue(currentProgress);
+
+		// 绘制百分比文本（进度条中间显示的百分数）
+		progressBar.setStringPainted(true);
+
+		// 添加进度改变通知
+		progressBar.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				System.out.println("当前进度值: " + progressBar.getValue() + "; " +
+						"进度百分比: " + progressBar.getPercentComplete());
+			}
+		});
+
+		// 添加到内容面板
+		panel.add(progressBar,"growx,h 4!,span 2");
+
+		jf.setContentPane(panel);
+		jf.setVisible(true);
+
+		// 模拟延时操作进度, 每隔 0.5 秒更新进度
+		new Timer(500, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentProgress++;
+				if (currentProgress > MAX_PROGRESS) {
+					currentProgress = MIN_PROGRESS;
+				}
+				progressBar.setValue(currentProgress);
+			}
+		}).start();
 	}
 }

@@ -9,8 +9,8 @@ import javax.swing.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.woratio.ui.panel.ReBuildModelPanel;
-import com.example.woratio.ui.panel.ToolBarPanel;
+import com.example.woratio.ui.panel.CasBasePanel;
+import com.example.woratio.ui.panel.SystemBarPanel;
 import com.example.woratio.utils.UiConsts;
 
 /**
@@ -25,7 +25,7 @@ public class App {
 	private JFrame frame;
 	public static JPanel mainPanelCenter;
 
-	public static ReBuildModelPanel reBuildModelPanel;
+	public static CasBasePanel casBasePanel;
 
 
 
@@ -74,13 +74,13 @@ public class App {
 		mainPanel.setBackground(Color.white);
 		mainPanel.setLayout(new BorderLayout());
 		/** 初始化工具栏 */
-		ToolBarPanel toolbar = new ToolBarPanel();
+		SystemBarPanel toolbar = new SystemBarPanel();
 		mainPanel.add(toolbar, BorderLayout.WEST);
-		/** 主页面 */
+		/** CAS页面 */
 		mainPanelCenter = new JPanel(true);
 		mainPanelCenter.setLayout(new BorderLayout());
-		reBuildModelPanel = new ReBuildModelPanel();
-		mainPanelCenter.add(reBuildModelPanel, BorderLayout.CENTER);
+		casBasePanel = new CasBasePanel();
+		mainPanelCenter.add(casBasePanel, BorderLayout.CENTER);
 		mainPanel.add(mainPanelCenter, BorderLayout.CENTER);
 
 		frame.add(mainPanel);

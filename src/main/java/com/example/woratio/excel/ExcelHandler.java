@@ -1,7 +1,6 @@
 package com.example.woratio.excel;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -14,8 +13,12 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 import com.example.woratio.bean.ExcelRowBean;
@@ -171,7 +174,6 @@ public class ExcelHandler {
 	 */
 	public List<ExcelRowBean> readWoratioInitData() throws IOException, InvalidFormatException {
 		//读取本地历史数据
-		List<ExcelRowBean> LocalData = readLocalWoratioInitData();
 		List<ExcelRowBean> result = new ArrayList<>();
 		if (result != null) {
 		}
@@ -180,11 +182,15 @@ public class ExcelHandler {
 			String[] split = new String[2];
 			split[0] = woratioInitExcel.getName().substring(0, i);
 			split[1] = woratioInitExcel.getName().substring(i + 1, woratioInitExcel.getName().length());
-			Workbook wb;
+			XSSFWorkbook wb;
 			wb = new XSSFWorkbook(woratioInitExcel);
 			//开始解析
-			Sheet sheet = wb.getSheetAt(0);
+			XSSFSheet sheet = wb.getSheetAt(0);
+			//获取数据
+			XSSFRow row = sheet.getRow(1);
+			List<ExcelRowBean> LocalData = loadLocalWoratioInitData(row);
 		}
+
 		return result;
 	}
 
@@ -195,11 +201,11 @@ public class ExcelHandler {
 	 * @author Felix
 	 * @date 2020/8/20 16:12
 	 */
-	private List<ExcelRowBean> readLocalWoratioInitData() throws IOException, InvalidFormatException {
+	private List<ExcelRowBean> loadLocalWoratioInitData(XSSFRow newRow) throws IOException, InvalidFormatException {
 		//读取本地历史数据
 		if  (localWoratioInitExcel == null) {
-			ClassPathResource classPathResource = new ClassPathResource("/data/woratioInitHistory.xlsx");
-			localWoratioInitExcel = classPathResource.getFile();
+			localWoratioInitExcel = ResourceUtils.getFile("classpath:data/woratioInitHistory.xlsx");
+//			localWoratioInitExcel = new File("C:/Users/Administrator/Desktop/dev/坏账预测/2020年7月/woratioInitHistory.xlsx");
 		}
 		List<ExcelRowBean> result = new ArrayList<>();
 		if (result != null) {
@@ -208,11 +214,22 @@ public class ExcelHandler {
 			int i = localWoratioInitExcel.getName().lastIndexOf(".");
 			String[] split = new String[2];
 			split[0] = localWoratioInitExcel.getName().substring(0, i);
-			split[1] = localWoratioInitExcel.getName().substring(i + 1, localWoratioInitExcel.getName().length());
-			Workbook wb;
+			split[1] = localWoratioInitExcel.getName().substring(i + 1);
+			XSSFWorkbook wb;
 			wb = new XSSFWorkbook(localWoratioInitExcel);
 			//开始解析
-			Sheet sheet = wb.getSheetAt(0);
+			XSSFSheet sheet = wb.getSheetAt(0);
+			//插入一行
+			sheet.shiftRows(sheet.getLastRowNum(), sheet.getLastRowNum(),1);
+			XSSFRow blankRow = sheet.createRow(sheet.getLastRowNum());
+			createWoratioInitExcelCell(blankRow, newRow);
+			FileOutputStream out = new FileOutputStream(ResourceUtils.getFile("classpath:data/woratioInitNew.xlsx"));
+			wb.write(out);
+			out.close();
+			wb.close();
+
+			wb = new XSSFWorkbook(localWoratioInitExcel);
+			sheet = wb.getSheetAt(0);
 			Row headRow = sheet.getRow(0);
 			for (int j = 1; j < headRow.getLastCellNum(); j++) {
 				ExcelRowBean excelRowBean = new ExcelRowBean();
@@ -222,7 +239,7 @@ public class ExcelHandler {
 			}
 			for (int j = 1; j < sheet.getLastRowNum(); j++) {
 				Row row = sheet.getRow(j);
-				String dateStr = row.getCell(0).toString();
+				String dateStr = row.getCell(0) == null ? "" : row.getCell(0).toString();
 				MonthBean mouthBean = DateUtils.getMouthBean(dateStr);
 				for (int k = 1; k < row.getLastCellNum(); k++) {
 					if (!StringUtils.isEmpty(row.getCell(k))) {
@@ -246,6 +263,20 @@ public class ExcelHandler {
 
 	public void saveFinancialExcel(File f) {
 		financialExcel = f;
+	}
+
+
+
+	/**
+	 * 创建要插入的行中单元格
+	 * @param blankRow
+	 * @param insertRow
+	 * @return
+	 */
+	private void createWoratioInitExcelCell(XSSFRow blankRow, XSSFRow insertRow) {
+		for (int i = 0; i < insertRow.getLastCellNum(); i++) {
+			blankRow.createCell(i).setCellValue(insertRow.getCell(i).toString());
+		}
 	}
 
 

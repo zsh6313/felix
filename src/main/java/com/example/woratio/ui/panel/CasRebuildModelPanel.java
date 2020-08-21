@@ -119,7 +119,7 @@ public class CasRebuildModelPanel extends JPanel {
         // 中间面板
         JPanel northPanel = new JPanel();
 		northPanel.setBackground(UiConsts.MAIN_BACK_COLOR);
-		northPanel.setLayout(new BorderLayout());
+		northPanel.setLayout(new GridLayout(1,3));
 
         //各个选择数据的面板
 		macroPanel = new JPanel();
@@ -170,13 +170,13 @@ public class CasRebuildModelPanel extends JPanel {
         financialPanel.add(textFieldfinancialDataData);
         financialPanel.add(buttonfinancialDataChoose);
 
-		macroPanel.setPreferredSize(new Dimension(1000,50));
-		woratioInitPanel.setPreferredSize(new Dimension(1000,50));
-		financialPanel.setPreferredSize(new Dimension(1000,50));
+		macroPanel.setPreferredSize(new Dimension(500,50));
+		woratioInitPanel.setPreferredSize(new Dimension(500,50));
+		financialPanel.setPreferredSize(new Dimension(500,50));
 
-		northPanel.add(macroPanel, BorderLayout.NORTH);
-		northPanel.add(woratioInitPanel, BorderLayout.CENTER);
-		northPanel.add(financialPanel,BorderLayout.SOUTH);
+		northPanel.add(macroPanel);
+		northPanel.add(woratioInitPanel);
+		northPanel.add(financialPanel);
         return northPanel;
     }
 
@@ -193,8 +193,8 @@ public class CasRebuildModelPanel extends JPanel {
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
 		//选择下拉框
 		JLabel createTypeLabel = ComponentFactory.getJlabel("ds.ui.rebuild.createTypeLabel");
-		createTypeLabel.setPreferredSize(new Dimension(160, 30));
-		createTypeLabel.setBorder( new EmptyBorder(0,60,0,0));
+		createTypeLabel.setPreferredSize(new Dimension(120, 30));
+		createTypeLabel.setBorder( new EmptyBorder(0,20,0,0));
 
 		JLabel fieldNumberLabel = ComponentFactory.getJlabel("ds.ui.rebuild.fieldNumberLabel");
 		fieldNumberLabel.setPreferredSize(new Dimension(130, 30));
@@ -271,9 +271,8 @@ public class CasRebuildModelPanel extends JPanel {
                     File f = jfc.getSelectedFile();// f为选择到的文件
                     textFieldMacroDataChoose.setText(f.getAbsolutePath());
 					excelHandler.saveMacroExcel(f);
-                    this.macroDataField  = DataHandler.getMacroDataField();
-					excelHandler.readMacroData();
-                }
+					excelHandler.loadMacroData();
+				}
 
             } catch (Exception e1) {
                 JOptionPane.showMessageDialog(App.casBasePanel, PropertyUtil.getProperty("ds.ui.save.fail") + e1.getMessage(), PropertyUtil.getProperty("ds.ui.tips"),
@@ -298,10 +297,8 @@ public class CasRebuildModelPanel extends JPanel {
 					File f = jfc.getSelectedFile();// f为选择到的文件
 					textFieldWoratioInitData.setText(f.getAbsolutePath());
 					excelHandler.saveWoratioInitExcel(f);
-					this.woratioInitField  =  dataHandler.getWoratioInitField();
-					excelHandler.readWoratioInitData();
+					excelHandler.loadWoratioInitData();
 				}
-
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(App.casBasePanel, PropertyUtil.getProperty("ds.ui.save.fail") + e1.getMessage(), PropertyUtil.getProperty("ds.ui.tips"),
 						JOptionPane.ERROR_MESSAGE);
@@ -324,7 +321,7 @@ public class CasRebuildModelPanel extends JPanel {
 					File f = jfc.getSelectedFile();// f为选择到的文件
 					textFieldfinancialDataData.setText(f.getAbsolutePath());
 					excelHandler.saveFinancialExcel(f);
-					excelHandler.readMacroData();
+					excelHandler.loadFinancialData("cas");
 				}
 
 			} catch (Exception e1) {
@@ -340,11 +337,18 @@ public class CasRebuildModelPanel extends JPanel {
 
 		buttonCreate.addActionListener(e -> {
             try {
-            	// 获取宏观数据
+            	// 获取表字段
+				this.woratioInitField  =  dataHandler.getWoratioInitField();
+				this.macroDataField  = dataHandler.getMacroDataField();
+				// 获取宏观数据
 				List<ExcelRowBean> macroData = dataHandler.getMacroData();
 				// 获取坏账初始数据
-
+				List<ExcelRowBean> woratioInitData = dataHandler.getWoratioInitData();
 				// 获取财务数据
+				ExcelRowBean cas = dataHandler.getFinancialData("cas");
+				// 随机-掷骰子
+				randomField
+				// 顺序-穷举法
 
 			} catch (Exception e1) {
                 JOptionPane.showMessageDialog(App.casBasePanel, PropertyUtil.getProperty("ds.ui.save.fail") + e1.getMessage(), PropertyUtil.getProperty("ds.ui.tips"),

@@ -1,6 +1,5 @@
 package com.example.woratio.bean;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +13,7 @@ public class ExcelRowBean {
 	private String name;
 
 	/** 数据信息 */
-	private List<Map<MonthBean,Object>> dataList;
+	private Map<MonthBean,Object> dataMap;
 
 	public String getName() {
 		return name;
@@ -24,11 +23,11 @@ public class ExcelRowBean {
 		this.name = name;
 	}
 
-	public List<Map<MonthBean, Object>> getDataList() {
-		return dataList;
+	public Map<MonthBean, Object> getDataMap() {
+		return dataMap;
 	}
 
-	public void setDataList(List<Map<MonthBean, Object>> dataList) {
-		this.dataList = dataList;
+	public void setDataMap(Map<MonthBean, Object> dataMap) {
+		this.dataMap = dataMap;
 	}
 }

@@ -1,6 +1,8 @@
 package com.example.woratio.excel;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -10,6 +12,9 @@ import java.util.Set;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -17,7 +22,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
@@ -38,6 +42,8 @@ public class ExcelHandler {
 	private static File woratioInitExcel;
 	private static File localWoratioInitExcel;
 	private static File financialExcel;
+
+	private DataHandler dataHandler = new DataHandler();
 
 	public List<Double> getLikelyDate() throws Exception {
 		File excel = new File(WO_RATIO_RESULT_EXCEL);
@@ -98,7 +104,7 @@ public class ExcelHandler {
 		return valueList;
 	}
 
-	public List<ExcelRowBean> readMacroData() throws IOException, InvalidFormatException {
+	public List<ExcelRowBean> loadMacroData() throws IOException, InvalidFormatException {
 		List<ExcelRowBean> result = new ArrayList<>();
 		if (macroExcel.isFile() && macroExcel.exists()) {   //判断文件是否存在
 			int i = macroExcel.getName().lastIndexOf(".");
@@ -125,7 +131,7 @@ public class ExcelHandler {
 			int dataLength = DateUtils.getMonthDifference(latestMonth, new MonthBean(2016, 6));
 			//获取符合条件的宏观数据名称
 			Set<String> macroDataFieldList = new LinkedHashSet<>();
-			Map<String, List> macroDataField = DataHandler.getMacroDataField();
+			Map<String, List> macroDataField = dataHandler.getMacroDataField();
 			for (Map.Entry<String, List> entry : macroDataField.entrySet()) {
 				macroDataFieldList.addAll(entry.getValue());
 			}
@@ -147,21 +153,20 @@ public class ExcelHandler {
 				}
 				if (macroDataFieldList.contains(rowName)) {		//校验符合条件的宏观数据
 					ExcelRowBean macroExcelBean = new ExcelRowBean();
-					List<Map<MonthBean, Object>> dataList = new ArrayList<>();
+					Map<MonthBean, Object> dataMap = new HashMap<>();
 					for (int j = 3; j < 4 + dataLength; j++) {
-						Map<MonthBean, Object> cellData = new HashMap<>();
 						MonthBean monthBean = latestMonth.subMonth(j - 3);
-						cellData.put(monthBean, row.getCell(j)== null ? "" : row.getCell(j).toString());
-						dataList.add(cellData);
+						dataMap.put(monthBean, row.getCell(j)== null ? "" : row.getCell(j).toString());
 					}
 					macroExcelBean.setName(rowName);
-					macroExcelBean.setDataList(dataList);
+					macroExcelBean.setDataMap(dataMap);
 					result.add(macroExcelBean);
 				}
 			}
 		} else {
 			System.out.println("找不到指定的文件");
 		}
+		dataHandler.setMacroData(result);
 		return result;
 	}
 	
@@ -172,11 +177,9 @@ public class ExcelHandler {
 	 * @author Felix
 	 * @date 2020/8/20 16:12
 	 */
-	public List<ExcelRowBean> readWoratioInitData() throws IOException, InvalidFormatException {
+	public List<ExcelRowBean> loadWoratioInitData() throws IOException, InvalidFormatException {
 		//读取本地历史数据
 		List<ExcelRowBean> result = new ArrayList<>();
-		if (result != null) {
-		}
 		if (woratioInitExcel.isFile() && woratioInitExcel.exists()) {   //判断文件是否存在
 			int i = woratioInitExcel.getName().lastIndexOf(".");
 			String[] split = new String[2];
@@ -188,20 +191,64 @@ public class ExcelHandler {
 			XSSFSheet sheet = wb.getSheetAt(0);
 			//获取数据
 			XSSFRow row = sheet.getRow(1);
-			List<ExcelRowBean> LocalData = loadLocalWoratioInitData(row);
+			result = unionLocalWoratioInitData(row);
 		}
-
+		dataHandler.setWoratioInitData(result);
 		return result;
 	}
 
 	/**
-	 * 功能描述 读取本地坏账初始数据的历史数据
+	 * 功能描述 读取财务表格数据
+	 * @param
+	 * @return java.util.List<com.example.woratio.bean.ExcelRowBean>
+	 * @author Felix
+	 * @date 2020/8/21 14:57
+	 */
+	public ExcelRowBean loadFinancialData(String system) throws IOException, InvalidFormatException {
+		ExcelRowBean financialBean = null;
+		Map<MonthBean,Object> dataMap = new HashMap<>();
+		if (financialExcel.isFile() && financialExcel.exists()) {   //判断文件是否存在
+			int i = financialExcel.getName().lastIndexOf(".");
+			String[] split = new String[2];
+			split[0] = financialExcel.getName().substring(0,i);
+			split[1] = financialExcel.getName().substring(i + 1,financialExcel.getName().length());
+			XSSFWorkbook wb;
+			wb = new XSSFWorkbook(financialExcel);
+			FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
+			//开始解析
+			XSSFSheet sheet = null;
+			if ("cas".equals(system)) {
+				sheet = wb.getSheetAt(0);
+			} else if ("ttf".equals(system)){
+				sheet = wb.getSheetAt(1);
+			}
+			MonthBean monthBean = new MonthBean(2016,6);
+			MonthBean currentBean = null;
+			for (int j = 1; j < sheet.getLastRowNum() + 1; j++) {
+				//begin row
+				currentBean = DateUtils.getMouthBean(sheet.getRow(j).getCell(0).toString());
+				if (sheet.getRow(j).getCell(0) != null
+						&& DateUtils.getMouthBean(sheet.getRow(j).getCell(0).toString()).subtractMonth(monthBean) >= 0){
+					dataMap.put(currentBean, getCellRealValue(evaluator, sheet.getRow(j).getCell(3)));
+				}
+			}
+			financialBean = new ExcelRowBean();
+			financialBean.setDataMap(dataMap);
+			financialBean.setName("wo_ratio");
+		}
+		dataHandler.setFinancialData(financialBean, system);
+		return financialBean;
+	}
+
+
+	/**
+	 * 功能描述 整合本地坏账初始数据的历史数据
 	 * @param
 	 * @return void
 	 * @author Felix
 	 * @date 2020/8/20 16:12
 	 */
-	private List<ExcelRowBean> loadLocalWoratioInitData(XSSFRow newRow) throws IOException, InvalidFormatException {
+	private List<ExcelRowBean> unionLocalWoratioInitData(XSSFRow newRow) throws IOException, InvalidFormatException {
 		//读取本地历史数据
 		if  (localWoratioInitExcel == null) {
 			localWoratioInitExcel = ResourceUtils.getFile("classpath:data/woratioInitHistory.xlsx");
@@ -219,9 +266,16 @@ public class ExcelHandler {
 			wb = new XSSFWorkbook(localWoratioInitExcel);
 			//开始解析
 			XSSFSheet sheet = wb.getSheetAt(0);
+			int lastRealRowNum = 0; //有值的行
+			for (int j = 0; j < sheet.getLastRowNum() + 1; j++) {
+				XSSFCell fristCell = sheet.getRow(j).getCell(0);
+				if (fristCell != null && !StringUtils.isEmpty(fristCell)) {
+					lastRealRowNum = j;
+				}
+			}
 			//插入一行
-			sheet.shiftRows(sheet.getLastRowNum(), sheet.getLastRowNum(),1);
-			XSSFRow blankRow = sheet.createRow(sheet.getLastRowNum());
+			sheet.shiftRows(lastRealRowNum + 1, lastRealRowNum + 1,1);
+			XSSFRow blankRow = sheet.createRow(lastRealRowNum + 1);
 			createWoratioInitExcelCell(blankRow, newRow);
 			FileOutputStream out = new FileOutputStream(ResourceUtils.getFile("classpath:data/woratioInitNew.xlsx"));
 			wb.write(out);
@@ -234,7 +288,7 @@ public class ExcelHandler {
 			for (int j = 1; j < headRow.getLastCellNum(); j++) {
 				ExcelRowBean excelRowBean = new ExcelRowBean();
 				excelRowBean.setName(headRow.getCell(j) != null ? headRow.getCell(j).toString() : "");
-				excelRowBean.setDataList(new ArrayList<>());
+				excelRowBean.setDataMap(new HashMap<>());
 				result.add(excelRowBean);
 			}
 			for (int j = 1; j < sheet.getLastRowNum(); j++) {
@@ -243,9 +297,7 @@ public class ExcelHandler {
 				MonthBean mouthBean = DateUtils.getMouthBean(dateStr);
 				for (int k = 1; k < row.getLastCellNum(); k++) {
 					if (!StringUtils.isEmpty(row.getCell(k))) {
-						Map<MonthBean,Object> cellBean = new HashMap<>();
-						cellBean.put(mouthBean.copy(), row.getCell(k).toString());
-						result.get(k-1).getDataList().add(cellBean);
+						result.get(k-1).getDataMap().put(mouthBean.copy(),row.getCell(k).toString());
 					}
 				}
 			}
@@ -280,4 +332,35 @@ public class ExcelHandler {
 	}
 
 
+	private Object getCellRealValue(FormulaEvaluator evaluator, XSSFCell cell) {
+		Object value= "";
+		switch (cell.getCellTypeEnum()) {
+		case BLANK:
+			value =  "";
+			break;
+		case BOOLEAN:
+			value = cell.getBooleanCellValue();
+			break;
+		case ERROR:
+			value = cell.getErrorCellString();
+			break;
+		case FORMULA:
+			CellValue cellValue = evaluator.evaluate(cell);
+			boolean isNumeric = cellValue.getCellTypeEnum() == CellType.NUMERIC;
+			value = (isNumeric) ? cellValue.getNumberValue() : cellValue.getStringValue();
+			if (isNumeric && value.toString().equals("0.0")) {
+				value = cell.getNumericCellValue();
+			}
+			break;
+		case NUMERIC:
+			value =  cell.getNumericCellValue();
+			break;
+		case STRING:
+			value = cell.getStringCellValue();
+			break;
+		default:
+			break;
+		}
+		return value;
+	}
 }

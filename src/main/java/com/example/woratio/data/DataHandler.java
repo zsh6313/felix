@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import com.example.woratio.bean.ExcelRowBean;
-import com.example.woratio.excel.ExcelHandler;
 import com.example.woratio.myenum.FinanceEnum;
 import com.example.woratio.myenum.ManufactureEnum;
 import com.example.woratio.myenum.NonManufactureEnum;
@@ -30,7 +29,10 @@ public class DataHandler {
 
 	private static List<ExcelRowBean> macroData;
 
-	public static Map<String, List> getMacroDataField() {
+	private static List<ExcelRowBean> woratioInitData;
+	private static Map<String,ExcelRowBean> financialDataMap;
+
+	public Map<String, List> getMacroDataField() {
 		if (DataHandler.macroDataField != null) {
 			return macroDataField;
 		}
@@ -108,16 +110,29 @@ public class DataHandler {
 		return macroDataFieldEnum;
 	}
 
-	public void setMacroData(List<ExcelRowBean> macroData) {
+	public  void setMacroData(List<ExcelRowBean> macroData) {
 		DataHandler.macroData = macroData;
 	}
 
-	public  List<ExcelRowBean> getMacroData() throws IOException, InvalidFormatException {
-		if(macroData == null) {
-			ExcelHandler excelHandler = new ExcelHandler();
-			macroData = excelHandler.readMacroData();
-		}
+	public  void setWoratioInitData(List<ExcelRowBean> woratioInitData) {
+		DataHandler.woratioInitData = woratioInitData;
+	}
+
+	public  void setFinancialData(ExcelRowBean financialData, String system) {
+		financialDataMap.put(system, financialData);
+	}
+
+
+	public List<ExcelRowBean> getMacroData() throws IOException, InvalidFormatException {
 		return macroData;
+	}
+
+	public List<ExcelRowBean> getWoratioInitData() throws IOException, InvalidFormatException {
+		return woratioInitData;
+	}
+
+	public ExcelRowBean getFinancialData(String system) throws IOException, InvalidFormatException {
+		return financialDataMap.get(system);
 	}
 
 	public List<String> getWoratioInitField() {

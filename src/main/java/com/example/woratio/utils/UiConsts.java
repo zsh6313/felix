@@ -24,8 +24,8 @@ public class UiConsts {
      */
     public final static int MAIN_WINDOW_X = 240;
     public final static int MAIN_WINDOW_Y = 100;
-    public final static int MAIN_WINDOW_WIDTH = 885;
-    public final static int MAIN_WINDOW_HEIGHT = 636;
+    public final static int MAIN_WINDOW_WIDTH = 1600;
+    public final static int MAIN_WINDOW_HEIGHT = 800;
 
     /**
      * 系统当前路径

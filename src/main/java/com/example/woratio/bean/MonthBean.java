@@ -1,5 +1,7 @@
 package com.example.woratio.bean;
 
+import java.util.Objects;
+
 /**
  * @filename MonthBean
  * @description
@@ -55,4 +57,32 @@ public class MonthBean {
 	public MonthBean copy() {
 		return new MonthBean(this.year, this.mouth);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		MonthBean monthBean = (MonthBean) o;
+		return year == monthBean.year && mouth == monthBean.mouth;
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(year, mouth);
+	}
+
+	/**
+	 * 功能描述 月份相减
+	 * @return boolean
+	 * @author Felix
+	 * @date 2020/8/21 17:05
+	 */
+	public int subtractMonth (MonthBean monthBean) {
+		return this.year *12 + this.mouth - monthBean.year * 12 - monthBean.mouth;
+ 	}
 }
